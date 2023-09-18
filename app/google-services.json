@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "46049519808",
+    "firebase_url": "https://ammas-pastries-sycn-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "ammas-pastries-sycn",
+    "storage_bucket": "ammas-pastries-sycn.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:46049519808:android:635f09b1960e029ea22525",
+        "android_client_info": {
+          "package_name": "com.AmmasPastriesSycn"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBsmOAHWDBS23WoQpeL5EeuzmZblqKlXqI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
