@@ -96,7 +96,7 @@ public class MainActivity extends FragmentActivity {
     private void playDefaultPlaylist() {
         // Display a message indicating that the playlist ID was not found, and play a default playlist
         Toast.makeText(MainActivity.this, "Playlist ID not found. Playing Default.", Toast.LENGTH_SHORT).show();
-        String defaultPlaylistId = "PLXhkwMTsebvXNoLvw04OfbfQetnvmNrc0";
+        String defaultPlaylistId = "PLXhkwMTsebvWOQmtoyIZSk0ODnyD-daPl";
         playYouTubePlaylist(defaultPlaylistId);
     }
 
