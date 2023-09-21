@@ -7,6 +7,7 @@ import androidx.fragment.app.FragmentActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -41,6 +42,55 @@ public class LoginActivity extends FragmentActivity {
                 public void onClick(View view) {
                     // Call the method to authenticate the user
                     authenticateUser();
+                }
+            });
+
+            // Add DPad navigation for the login button
+            loginButton.setOnKeyListener(new View.OnKeyListener() {
+                @Override
+                public boolean onKey(View v, int keyCode, KeyEvent event) {
+                    if (event.getAction() == KeyEvent.ACTION_DOWN) {
+                        switch (keyCode) {
+                            case KeyEvent.KEYCODE_DPAD_CENTER:
+                            case KeyEvent.KEYCODE_ENTER:
+                                // Handle selection or button press
+                                authenticateUser();
+                                return true;
+                            // Handle other DPad keys as needed
+                        }
+                    }
+                    return false;
+                }
+            });
+
+            // Add DPad navigation for the edit text fields
+            editTextEmail.setOnKeyListener(new View.OnKeyListener() {
+                @Override
+                public boolean onKey(View v, int keyCode, KeyEvent event) {
+                    if (event.getAction() == KeyEvent.ACTION_DOWN) {
+                        switch (keyCode) {
+                            case KeyEvent.KEYCODE_DPAD_DOWN:
+                                // Move focus to the next field or button if available
+                                editTextPassword.requestFocus();
+                                return true;
+                        }
+                    }
+                    return false;
+                }
+            });
+
+            editTextPassword.setOnKeyListener(new View.OnKeyListener() {
+                @Override
+                public boolean onKey(View v, int keyCode, KeyEvent event) {
+                    if (event.getAction() == KeyEvent.ACTION_DOWN) {
+                        switch (keyCode) {
+                            case KeyEvent.KEYCODE_DPAD_UP:
+                                // Move focus to the previous field or button if available
+                                editTextEmail.requestFocus();
+                                return true;
+                        }
+                    }
+                    return false;
                 }
             });
         } else {
