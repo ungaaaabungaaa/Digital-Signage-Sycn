@@ -1,7 +1,6 @@
 package com.AmmasPastriesSycn;
 
 import static android.content.ContentValues.TAG;
-
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
 import android.content.Intent;
