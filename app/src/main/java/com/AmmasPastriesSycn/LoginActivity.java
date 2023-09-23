@@ -34,67 +34,11 @@ public class LoginActivity extends FragmentActivity {
         mAuth = FirebaseAuth.getInstance();
 
         // Check if network is available
-        if (NetworkUtils.isNetworkAvailable(LoginActivity.this)) {
-            // Set click listener for login button
-            loginButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    // Call the method to authenticate the user
-                    authenticateUser();
-                }
-            });
-
-            // Add DPad navigation for the login button
-            loginButton.setOnKeyListener(new View.OnKeyListener() {
-                @Override
-                public boolean onKey(View v, int keyCode, KeyEvent event) {
-                    if (event.getAction() == KeyEvent.ACTION_DOWN) {
-                        switch (keyCode) {
-                            case KeyEvent.KEYCODE_DPAD_CENTER:
-                            case KeyEvent.KEYCODE_ENTER:
-                                // Handle selection or button press
-                                authenticateUser();
-                                return true;
-                            // Handle other DPad keys as needed
-                        }
-                    }
-                    return false;
-                }
-            });
-
-            // Add DPad navigation for the edit text fields
-            editTextEmail.setOnKeyListener(new View.OnKeyListener() {
-                @Override
-                public boolean onKey(View v, int keyCode, KeyEvent event) {
-                    if (event.getAction() == KeyEvent.ACTION_DOWN) {
-                        switch (keyCode) {
-                            case KeyEvent.KEYCODE_DPAD_DOWN:
-                                // Move focus to the next field or button if available
-                                editTextPassword.requestFocus();
-                                return true;
-                        }
-                    }
-                    return false;
-                }
-            });
-
-            editTextPassword.setOnKeyListener(new View.OnKeyListener() {
-                @Override
-                public boolean onKey(View v, int keyCode, KeyEvent event) {
-                    if (event.getAction() == KeyEvent.ACTION_DOWN) {
-                        switch (keyCode) {
-                            case KeyEvent.KEYCODE_DPAD_UP:
-                                // Move focus to the previous field or button if available
-                                editTextEmail.requestFocus();
-                                return true;
-                        }
-                    }
-                    return false;
-                }
-            });
-        } else {
+        if (!NetworkUtils.isNetworkAvailable(LoginActivity.this)) {
             // Display a toast message if there's no internet connection
             Toast.makeText(LoginActivity.this, "No internet connection", Toast.LENGTH_LONG).show();
+        } else {
+            setupUIElements();
         }
     }
 
@@ -103,6 +47,65 @@ public class LoginActivity extends FragmentActivity {
         loginButton = findViewById(R.id.button2);
         editTextEmail = findViewById(R.id.editTextTextEmailAddress);
         editTextPassword = findViewById(R.id.editTextTextPassword);
+    }
+
+    // Helper method to set up UI elements and event listeners
+    private void setupUIElements() {
+        loginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Call the method to authenticate the user
+                authenticateUser();
+            }
+        });
+
+        // Add DPad navigation for the login button
+        loginButton.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (event.getAction() == KeyEvent.ACTION_DOWN) {
+                    switch (keyCode) {
+                        case KeyEvent.KEYCODE_DPAD_CENTER:
+                        case KeyEvent.KEYCODE_ENTER:
+                            // Handle selection or button press
+                            authenticateUser();
+                            return true;
+                    }
+                }
+                return false;
+            }
+        });
+
+        // Add DPad navigation for the edit text fields
+        editTextEmail.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (event.getAction() == KeyEvent.ACTION_DOWN) {
+                    switch (keyCode) {
+                        case KeyEvent.KEYCODE_DPAD_DOWN:
+                            // Move focus to the next field or button if available
+                            editTextPassword.requestFocus();
+                            return true;
+                    }
+                }
+                return false;
+            }
+        });
+
+        editTextPassword.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (event.getAction() == KeyEvent.ACTION_DOWN) {
+                    switch (keyCode) {
+                        case KeyEvent.KEYCODE_DPAD_UP:
+                            // Move focus to the previous field or button if available
+                            editTextEmail.requestFocus();
+                            return true;
+                    }
+                }
+                return false;
+            }
+        });
     }
 
     // Method to authenticate the user

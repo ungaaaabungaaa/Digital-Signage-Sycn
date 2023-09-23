@@ -21,10 +21,11 @@ import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTube
 
 public class MainActivity extends FragmentActivity {
 
-    ImageView imageView;
-    YouTubePlayerView youTubePlayerView;
-    YouTubePlayer youTubePlayer;
+    private ImageView imageView;
+    private YouTubePlayerView youTubePlayerView;
+    private YouTubePlayer youTubePlayer;
     private FirebaseAuth mAuth;
+    private DatabaseReference playlistReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,28 +34,31 @@ public class MainActivity extends FragmentActivity {
 
         // Initialize Firebase Authentication
         mAuth = FirebaseAuth.getInstance();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
 
         // Initialize UI elements
         imageView = findViewById(R.id.imageView);
         youTubePlayerView = findViewById(R.id.youtube_player);
 
-        // Check for network connectivity and initialize YouTube player if available
-        if (NetworkUtils.isNetworkAvailable(MainActivity.this)) {
-            initializeYouTubePlayer();
-        } else {
+        // Check for network connectivity and user authentication
+        if (!NetworkUtils.isNetworkAvailable(this)) {
             handleNoInternetConnection();
+        } else if (currentUser == null) {
+            navigateToLogin();
+        } else {
+            initializeYouTubePlayer();
         }
     }
 
     private void initializeYouTubePlayer() {
-        // Set up Firebase database reference
+        // Set up Firebase database reference for the playlist
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference reference = database.getReference();
+        playlistReference = database.getReference("Playlist_id");
 
-        // Listen for changes in the "Playlist_id" node in the Firebase database
-        reference.child("Playlist_id").addValueEventListener(new ValueEventListener() {
+        // Listen for changes in the playlist ID node
+        playlistReference.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
                     String playlistId = dataSnapshot.getValue(String.class);
                     playYouTubePlaylist(playlistId);
@@ -64,7 +68,7 @@ public class MainActivity extends FragmentActivity {
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
+            public void onCancelled(@NonNull DatabaseError databaseError) {
                 Toast.makeText(MainActivity.this, "Error: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
@@ -107,6 +111,13 @@ public class MainActivity extends FragmentActivity {
         Toast.makeText(this, "No internet connection", Toast.LENGTH_LONG).show();
     }
 
+    private void navigateToLogin() {
+        // Navigate to the LoginActivity if no user is logged in
+        Intent mainIntent = new Intent(MainActivity.this, LoginActivity.class);
+        startActivity(mainIntent);
+        finish();
+    }
+
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -114,22 +125,5 @@ public class MainActivity extends FragmentActivity {
         if (youTubePlayer != null) {
             youTubePlayerView.release();
         }
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        // Check if a user is logged in; if not, navigate to the login screen
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        if (currentUser == null) {
-            navigateToLogin();
-        }
-    }
-
-    private void navigateToLogin() {
-        // Navigate to the LoginActivity if no user is logged in
-        Intent mainIntent = new Intent(MainActivity.this, LoginActivity.class);
-        startActivity(mainIntent);
-        finish();
     }
 }
