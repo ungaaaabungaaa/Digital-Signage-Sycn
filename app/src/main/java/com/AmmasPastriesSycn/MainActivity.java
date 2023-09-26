@@ -40,7 +40,10 @@ public class MainActivity extends FragmentActivity {
         // Initialize UI elements
         imageView = findViewById(R.id.imageView);
         youTubePlayerView = findViewById(R.id.youtube_player);
-        textView=findViewById(R.id.textView);
+        textView = findViewById(R.id.textView);
+
+        // Request focus for the imageView
+        imageView.requestFocus();
 
         // Check for network connectivity and initialize YouTube player if available
         if (NetworkUtils.isNetworkAvailable(MainActivity.this)) {
@@ -137,8 +140,4 @@ public class MainActivity extends FragmentActivity {
         startActivity(mainIntent);
         finish();
     }
-
-
-
 }
-

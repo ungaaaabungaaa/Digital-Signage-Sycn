@@ -4,6 +4,13 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
 
+
+    <!-- Features that the app may or may not require -->
+    <uses-feature
+        android:name="android.software.leanback"
+        android:required="true" />
+
+
     <!-- Features that the app may or may not require -->
     <uses-feature android:name="android.hardware.touchscreen"
         android:required="false"/>
@@ -66,7 +73,6 @@
                 <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
             </intent-filter>
         </activity>
-
     </application>
 
 </manifest>

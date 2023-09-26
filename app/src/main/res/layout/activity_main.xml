@@ -5,13 +5,16 @@
     android:background="#f05225"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity"
+    android:descendantFocusability="beforeDescendants">
 
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
         android:src="@mipmap/ic_launcher_round"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -37,6 +40,8 @@
         android:layout_marginTop="21dp"
         android:textColor="#000"
         android:textFontWeight="400"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
         android:textAllCaps="false"
         app:layout_constraintEnd_toEndOf="@+id/imageView"
         app:layout_constraintStart_toStartOf="@+id/imageView"

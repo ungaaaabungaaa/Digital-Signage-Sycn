@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:background="#f05225"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".LoginActivity">
+    tools:context=".LoginActivity"
+    android:descendantFocusability="beforeDescendants">
 
     <ImageView
         android:id="@+id/imageView"
@@ -18,53 +20,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         android:focusable="true"
-        android:focusableInTouchMode="true"/>
-
-    <Button
-        android:id="@+id/button2"
-        android:layout_width="0px"
-        android:layout_height="wrap_content"
-        android:background="@drawable/rounded_button_background"
-        android:paddingTop="21dp"
-        android:layout_marginTop="21dp"
-        android:paddingBottom="21dp"
-        android:text="@string/login"
-        android:focusable="true"
-        android:textColor="#FFF"
-        android:layout_marginStart="64dp"
-        android:layout_marginEnd="64dp"
-        android:textAlignment="center"
-        android:textAllCaps="false"
-        android:focusableInTouchMode="true"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextTextPassword" />
-
-    <EditText
-        android:id="@+id/editTextTextPassword"
-        android:layout_width="0px"
-        android:layout_height="wrap_content"
-        android:backgroundTint="#000"
-        android:drawableEnd="@drawable/baseline_key_24"
-        android:ellipsize="end"
-        android:ems="10"
-        android:hint="@string/password"
-        android:inputType="textPassword"
-        android:maxLines="1"
-        android:paddingStart="12dp"
-        android:paddingBottom="22dp"
-        android:textAllCaps="false"
-        android:textColor="#000"
-        android:layout_marginStart="64dp"
-        android:layout_marginEnd="64dp"
-        android:textColorHint="#000"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        android:focusable="true"
-        android:focusableInTouchMode="true"
-        app:layout_constraintTop_toBottomOf="@+id/editTextTextEmailAddress" />
+        android:focusableInTouchMode="true" />
 
     <EditText
         android:id="@+id/editTextTextEmailAddress"
@@ -76,14 +32,15 @@
         android:drawableEnd="@drawable/baseline_email_24"
         android:ellipsize="end"
         android:ems="10"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
         android:hint="@string/e_mail"
         android:inputType="textEmailAddress"
         android:maxLines="1"
+        android:nextFocusDown="@+id/editTextTextPassword"
         android:paddingStart="12dp"
         android:paddingBottom="22dp"
         android:singleLine="true"
-        android:focusable="true"
-        android:focusableInTouchMode="true"
         android:textAllCaps="false"
         android:textColor="#000"
         android:textColorHint="#000"
@@ -92,5 +49,53 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/editTextTextPassword"
+        android:layout_width="0px"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="64dp"
+        android:layout_marginEnd="64dp"
+        android:backgroundTint="#000"
+        android:drawableEnd="@drawable/baseline_key_24"
+        android:ellipsize="end"
+        android:ems="10"
+        android:hint="@string/password"
+        android:inputType="textPassword"
+        android:maxLines="1"
+        android:paddingStart="12dp"
+        android:paddingBottom="22dp"
+        android:textAllCaps="false"
+        android:textColor="#000"
+        android:layout_marginTop="21dp"
+        android:textColorHint="#000"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTextTextEmailAddress"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:nextFocusUp="@+id/editTextTextEmailAddress" />
+
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="0px"
+        android:layout_height="wrap_content"
+        android:background="@drawable/rounded_button_background"
+        android:paddingTop="21dp"
+        android:layout_marginTop="21dp"
+        android:paddingBottom="21dp"
+        android:text="@string/login"
+        android:textColor="#FFF"
+        android:layout_marginStart="64dp"
+        android:layout_marginEnd="64dp"
+        android:textAlignment="center"
+        android:textAllCaps="false"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTextTextPassword"
+        android:focusable="true"
+        android:focusableInTouchMode="true" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
