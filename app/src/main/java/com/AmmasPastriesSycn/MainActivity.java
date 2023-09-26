@@ -44,6 +44,19 @@ public class MainActivity extends FragmentActivity {
 
         // Request focus for the imageView
         imageView.requestFocus();
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(MainActivity.this, "Ammas Pastries Sync", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        textView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(MainActivity.this, "Ammas Pastries Sync", Toast.LENGTH_SHORT).show();
+            }
+        });
 
         // Check for network connectivity and initialize YouTube player if available
         if (NetworkUtils.isNetworkAvailable(MainActivity.this)) {

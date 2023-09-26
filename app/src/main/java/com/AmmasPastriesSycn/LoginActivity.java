@@ -10,6 +10,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -23,6 +24,8 @@ public class LoginActivity extends FragmentActivity {
     private EditText editTextEmail, editTextPassword;
     private Button loginButton;
     private FirebaseAuth mAuth;
+
+    private ImageView imageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +50,7 @@ public class LoginActivity extends FragmentActivity {
         loginButton = findViewById(R.id.button2);
         editTextEmail = findViewById(R.id.editTextTextEmailAddress);
         editTextPassword = findViewById(R.id.editTextTextPassword);
+        imageView=findViewById(R.id.imageView);
     }
 
     // Helper method to set up UI elements and event listeners
@@ -56,6 +60,13 @@ public class LoginActivity extends FragmentActivity {
             public void onClick(View view) {
                 // Call the method to authenticate the user
                 authenticateUser();
+            }
+        });
+
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(LoginActivity.this, "Amma's Pastries Sync", Toast.LENGTH_SHORT).show();
             }
         });
 
