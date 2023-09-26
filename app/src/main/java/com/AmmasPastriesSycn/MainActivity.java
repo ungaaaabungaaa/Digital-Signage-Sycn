@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
@@ -21,11 +22,12 @@ import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTube
 
 public class MainActivity extends FragmentActivity {
 
-    private ImageView imageView;
-    private YouTubePlayerView youTubePlayerView;
-    private YouTubePlayer youTubePlayer;
+    ImageView imageView;
+    YouTubePlayerView youTubePlayerView;
+    YouTubePlayer youTubePlayer;
     private FirebaseAuth mAuth;
-    private DatabaseReference playlistReference;
+
+    TextView textView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,31 +36,29 @@ public class MainActivity extends FragmentActivity {
 
         // Initialize Firebase Authentication
         mAuth = FirebaseAuth.getInstance();
-        FirebaseUser currentUser = mAuth.getCurrentUser();
 
         // Initialize UI elements
         imageView = findViewById(R.id.imageView);
         youTubePlayerView = findViewById(R.id.youtube_player);
+        textView=findViewById(R.id.textView);
 
-        // Check for network connectivity and user authentication
-        if (!NetworkUtils.isNetworkAvailable(this)) {
-            handleNoInternetConnection();
-        } else if (currentUser == null) {
-            navigateToLogin();
-        } else {
+        // Check for network connectivity and initialize YouTube player if available
+        if (NetworkUtils.isNetworkAvailable(MainActivity.this)) {
             initializeYouTubePlayer();
+        } else {
+            handleNoInternetConnection();
         }
     }
 
     private void initializeYouTubePlayer() {
-        // Set up Firebase database reference for the playlist
+        // Set up Firebase database reference
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        playlistReference = database.getReference("Playlist_id");
+        DatabaseReference reference = database.getReference();
 
-        // Listen for changes in the playlist ID node
-        playlistReference.addValueEventListener(new ValueEventListener() {
+        // Listen for changes in the "Playlist_id" node in the Firebase database
+        reference.child("Playlist_id").addValueEventListener(new ValueEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+            public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
                     String playlistId = dataSnapshot.getValue(String.class);
                     playYouTubePlaylist(playlistId);
@@ -68,7 +68,7 @@ public class MainActivity extends FragmentActivity {
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
+            public void onCancelled(DatabaseError databaseError) {
                 Toast.makeText(MainActivity.this, "Error: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
@@ -108,14 +108,8 @@ public class MainActivity extends FragmentActivity {
         // Handle UI when there is no internet connection
         youTubePlayerView.setVisibility(View.GONE);
         imageView.setVisibility(View.VISIBLE);
+        textView.setText("No internet connection");
         Toast.makeText(this, "No internet connection", Toast.LENGTH_LONG).show();
-    }
-
-    private void navigateToLogin() {
-        // Navigate to the LoginActivity if no user is logged in
-        Intent mainIntent = new Intent(MainActivity.this, LoginActivity.class);
-        startActivity(mainIntent);
-        finish();
     }
 
     @Override
@@ -126,4 +120,25 @@ public class MainActivity extends FragmentActivity {
             youTubePlayerView.release();
         }
     }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        // Check if a user is logged in; if not, navigate to the login screen
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if (currentUser == null) {
+            navigateToLogin();
+        }
+    }
+
+    private void navigateToLogin() {
+        // Navigate to the LoginActivity if no user is logged in
+        Intent mainIntent = new Intent(MainActivity.this, LoginActivity.class);
+        startActivity(mainIntent);
+        finish();
+    }
+
+
+
 }
+
