@@ -4,12 +4,10 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
 
-
     <!-- Features that the app may or may not require -->
     <uses-feature
         android:name="android.software.leanback"
         android:required="true" />
-
 
     <!-- Features that the app may or may not require -->
     <uses-feature android:name="android.hardware.touchscreen"
@@ -32,6 +30,8 @@
     <uses-feature android:name="android.hardware.wifi"
         android:required="false"/>
 
+    <uses-configuration
+        android:reqNavigation="dpad"/>
 
     <!-- Firebase Performance logcat configuration -->
     <meta-data

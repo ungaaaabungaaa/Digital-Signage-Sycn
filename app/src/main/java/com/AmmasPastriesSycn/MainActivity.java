@@ -76,7 +76,17 @@ public class MainActivity extends FragmentActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
+                    // Get the new playlist ID from Firebase
                     String playlistId = dataSnapshot.getValue(String.class);
+
+                    // Check if there's an existing YouTubePlayer
+                    if (youTubePlayer != null) {
+                        // Release the existing YouTubePlayer
+                        youTubePlayerView.release();
+                        youTubePlayer = null;
+                    }
+
+                    // Initialize and play the new YouTube playlist
                     playYouTubePlaylist(playlistId);
                 } else {
                     playDefaultPlaylist();
@@ -95,13 +105,15 @@ public class MainActivity extends FragmentActivity {
         IFramePlayerOptions iFramePlayerOptions = new IFramePlayerOptions.Builder()
                 .controls(0)
                 .mute(1)
+                .ccLoadPolicy(0)
+                .ivLoadPolicy(0)
                 .listType("playlist")
                 .list(playlistId)
                 .build();
 
         // Initialize YouTube player and start playback
-        getLifecycle().addObserver(youTubePlayerView);
         youTubePlayerView.setVisibility(View.VISIBLE);
+        textView.setVisibility(View.GONE);
 
         final AbstractYouTubePlayerListener youTubePlayerListener = new AbstractYouTubePlayerListener() {
             @Override
@@ -117,6 +129,9 @@ public class MainActivity extends FragmentActivity {
         // Display a message indicating that the playlist ID was not found, and play a default playlist
         Toast.makeText(MainActivity.this, "Playlist ID not found. Playing Default.", Toast.LENGTH_SHORT).show();
         String defaultPlaylistId = "PLXhkwMTsebvWOQmtoyIZSk0ODnyD-daPl";
+
+        // Ensure that you set youTubePlayer to null after releasing it
+        youTubePlayer = null;
         playYouTubePlaylist(defaultPlaylistId);
     }
 
