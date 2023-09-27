@@ -15,7 +15,6 @@ android {
         targetSdk 33
         versionCode 13
         versionName "1.13"
-
     }
 
     buildTypes {
@@ -43,4 +42,5 @@ dependencies {
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.firebase:firebase-perf")
     implementation("com.google.firebase:firebase-database")
+
 }

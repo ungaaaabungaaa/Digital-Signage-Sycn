@@ -24,7 +24,6 @@ public class LoginActivity extends FragmentActivity {
     private EditText editTextEmail, editTextPassword;
     private Button loginButton;
     private FirebaseAuth mAuth;
-
     private ImageView imageView;
 
     @Override
