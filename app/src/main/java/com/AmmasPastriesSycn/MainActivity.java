@@ -78,14 +78,6 @@ public class MainActivity extends FragmentActivity {
                 if (dataSnapshot.exists()) {
                     // Get the new playlist ID from Firebase
                     String playlistId = dataSnapshot.getValue(String.class);
-
-                    // Check if there's an existing YouTubePlayer
-                    if (youTubePlayer != null) {
-                        // Release the existing YouTubePlayer
-                        youTubePlayerView.release();
-                        youTubePlayer = null;
-                    }
-
                     // Initialize and play the new YouTube playlist
                     playYouTubePlaylist(playlistId);
                 } else {
@@ -147,9 +139,7 @@ public class MainActivity extends FragmentActivity {
     public void onDestroy() {
         super.onDestroy();
         // Release the YouTube player when the activity is destroyed
-        if (youTubePlayer != null) {
-            youTubePlayerView.release();
-        }
+        youTubePlayerView.release();
     }
 
     @Override
