@@ -2,9 +2,8 @@ package com.AmmasPastriesSycn;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
@@ -22,42 +21,20 @@ import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTube
 
 public class MainActivity extends FragmentActivity {
 
-    ImageView imageView;
     YouTubePlayerView youTubePlayerView;
     YouTubePlayer youTubePlayer;
     private FirebaseAuth mAuth;
 
-    TextView textView;
+    private boolean isPaused = false; // Track whether the video is paused or not
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         // Initialize Firebase Authentication
         mAuth = FirebaseAuth.getInstance();
-
         // Initialize UI elements
-        imageView = findViewById(R.id.imageView);
         youTubePlayerView = findViewById(R.id.youtube_player);
-        textView = findViewById(R.id.textView);
-
-        // Request focus for the imageView
-        imageView.requestFocus();
-        imageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(MainActivity.this, "Ammas Pastries Sync", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        textView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(MainActivity.this, "Ammas Pastries Sync", Toast.LENGTH_SHORT).show();
-            }
-        });
-
         // Check for network connectivity and initialize YouTube player if available
         if (NetworkUtils.isNetworkAvailable(MainActivity.this)) {
             initializeYouTubePlayer();
@@ -99,14 +76,13 @@ public class MainActivity extends FragmentActivity {
                 .mute(1)
                 .ccLoadPolicy(0)
                 .ivLoadPolicy(0)
+                .fullscreen(1)
                 .listType("playlist")
                 .list(playlistId)
                 .build();
 
         // Initialize YouTube player and start playback
         youTubePlayerView.setVisibility(View.VISIBLE);
-        textView.setVisibility(View.GONE);
-
         final AbstractYouTubePlayerListener youTubePlayerListener = new AbstractYouTubePlayerListener() {
             @Override
             public void onReady(@NonNull YouTubePlayer youTubePlayer) {
@@ -130,8 +106,6 @@ public class MainActivity extends FragmentActivity {
     private void handleNoInternetConnection() {
         // Handle UI when there is no internet connection
         youTubePlayerView.setVisibility(View.GONE);
-        imageView.setVisibility(View.VISIBLE);
-        textView.setText("No internet connection");
         Toast.makeText(this, "No internet connection", Toast.LENGTH_LONG).show();
     }
 
@@ -157,5 +131,26 @@ public class MainActivity extends FragmentActivity {
         Intent mainIntent = new Intent(MainActivity.this, LoginActivity.class);
         startActivity(mainIntent);
         finish();
+    }
+
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER) {
+            // Check if the YouTube player is initialized
+            if (youTubePlayer != null) {
+                if (isPaused) {
+                    // If the video is currently paused, resume playback
+                    youTubePlayer.play();
+                    Toast.makeText(MainActivity.this, "Resumed", Toast.LENGTH_SHORT).show();
+                } else {
+                    // If the video is currently playing, pause it
+                    youTubePlayer.pause();
+                    Toast.makeText(MainActivity.this, "Paused", Toast.LENGTH_SHORT).show();
+                }
+                // Toggle the pause state
+                isPaused = !isPaused;
+            }
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 }
