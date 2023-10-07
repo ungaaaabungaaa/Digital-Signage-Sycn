@@ -41,6 +41,7 @@
         android:banner="@mipmap/ic_banner"
         android:label="@string/app_name"
         android:supportsRtl="true"
+        android:configChanges="keyboard|keyboardHidden|navigation"
         android:theme="@style/Theme.AmmasPastriesSycn">
 
         <!-- Firebase Performance logcat configuration -->
@@ -59,9 +60,7 @@
 
         <activity
             android:name=".LoginActivity"
-            android:exported="true" />
-        <activity
-            android:name=".MainActivity"
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:exported="true">
             <intent-filter>
                 <!-- Specifies that this is the main activity -->
@@ -69,6 +68,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
                 <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".MainActivity"
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+            android:exported="true">
         </activity>
     </application>
 

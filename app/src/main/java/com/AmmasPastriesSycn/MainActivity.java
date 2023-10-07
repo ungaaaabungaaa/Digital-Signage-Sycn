@@ -7,8 +7,6 @@ import android.view.View;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -23,7 +21,6 @@ public class MainActivity extends FragmentActivity {
 
     YouTubePlayerView youTubePlayerView;
     YouTubePlayer youTubePlayer;
-    private FirebaseAuth mAuth;
 
     private boolean isPaused = false; // Track whether the video is paused or not
 
@@ -32,9 +29,10 @@ public class MainActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         // Initialize Firebase Authentication
-        mAuth = FirebaseAuth.getInstance();
+
         // Initialize UI elements
         youTubePlayerView = findViewById(R.id.youtube_player);
+        getLifecycle().addObserver(youTubePlayerView);
         // Check for network connectivity and initialize YouTube player if available
         if (NetworkUtils.isNetworkAvailable(MainActivity.this)) {
             initializeYouTubePlayer();
@@ -90,6 +88,7 @@ public class MainActivity extends FragmentActivity {
                 MainActivity.this.youTubePlayer.play();
             }
         };
+
         youTubePlayerView.initialize(youTubePlayerListener, true, iFramePlayerOptions);
     }
 
@@ -97,7 +96,6 @@ public class MainActivity extends FragmentActivity {
         // Display a message indicating that the playlist ID was not found, and play a default playlist
         Toast.makeText(MainActivity.this, "Playlist ID not found. Playing Default.", Toast.LENGTH_SHORT).show();
         String defaultPlaylistId = "PLXhkwMTsebvWOQmtoyIZSk0ODnyD-daPl";
-
         // Ensure that you set youTubePlayer to null after releasing it
         youTubePlayer = null;
         playYouTubePlaylist(defaultPlaylistId);
@@ -107,30 +105,6 @@ public class MainActivity extends FragmentActivity {
         // Handle UI when there is no internet connection
         youTubePlayerView.setVisibility(View.GONE);
         Toast.makeText(this, "No internet connection", Toast.LENGTH_LONG).show();
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        // Release the YouTube player when the activity is destroyed
-        youTubePlayerView.release();
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        // Check if a user is logged in; if not, navigate to the login screen
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        if (currentUser == null) {
-            navigateToLogin();
-        }
-    }
-
-    private void navigateToLogin() {
-        // Navigate to the LoginActivity if no user is logged in
-        Intent mainIntent = new Intent(MainActivity.this, LoginActivity.class);
-        startActivity(mainIntent);
-        finish();
     }
 
     public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -153,4 +127,12 @@ public class MainActivity extends FragmentActivity {
         }
         return super.onKeyDown(keyCode, event);
     }
+
+    @Override
+    public void onStop() {
+        // App-specific method to stop playback.
+        youTubePlayerView.release();
+        super.onStop();
+    }
+
 }

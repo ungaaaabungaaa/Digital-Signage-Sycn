@@ -4,6 +4,7 @@ import static android.content.ContentValues.TAG;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -34,6 +35,12 @@ public class LoginActivity extends FragmentActivity {
 
         // Initialize Firebase Authentication
         mAuth = FirebaseAuth.getInstance();
+
+
+        // Check whether android.hardware.touchscreen feature is available.
+        if (getPackageManager().hasSystemFeature(PackageManager.FEATURE_TOUCHSCREEN)) {
+            Log.d("HardwareFeatureTest", "Device has a touchscreen.");
+        }
 
         // Check if network is available
         if (!NetworkUtils.isNetworkAvailable(LoginActivity.this)) {
@@ -154,4 +161,25 @@ public class LoginActivity extends FragmentActivity {
         startActivity(mainIntent);
         finish();
     }
+
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        // Check if a user is logged in; if not, navigate to the login screen
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if (currentUser != null) {
+            navigateToHome();
+        }
+    }
+
+    private void navigateToHome() {
+        // Navigate to the LoginActivity if no user is logged in
+        Intent mainIntent = new Intent(LoginActivity.this, MainActivity.class);
+        startActivity(mainIntent);
+        finish();
+    }
+
+
+
 }
