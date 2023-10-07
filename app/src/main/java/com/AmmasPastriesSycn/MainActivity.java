@@ -21,14 +21,12 @@ public class MainActivity extends FragmentActivity {
 
     YouTubePlayerView youTubePlayerView;
     YouTubePlayer youTubePlayer;
-
     private boolean isPaused = false; // Track whether the video is paused or not
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        // Initialize Firebase Authentication
 
         // Initialize UI elements
         youTubePlayerView = findViewById(R.id.youtube_player);
