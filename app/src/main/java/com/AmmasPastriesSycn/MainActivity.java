@@ -18,7 +18,7 @@ import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTube
 
 public class MainActivity extends FragmentActivity {
 
-    YouTubePlayerView youTubePlayerView;
+    YouTubePlayerView  youTubePlayerView;
     YouTubePlayer youTubePlayer;
     private boolean isPaused = false; // Track whether the video is paused or not
 

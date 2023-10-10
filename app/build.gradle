@@ -7,12 +7,12 @@ plugins {
 
 android {
     namespace 'com.AmmasPastriesSycn'
-    compileSdk 33
+    compileSdk 34
 
     defaultConfig {
         applicationId "com.AmmasPastriesSycn"
         minSdk 22
-        targetSdk 33
+        targetSdk 34
         versionCode 20
         versionName "Dpad Missing Fix 2.0"
     }
@@ -33,7 +33,7 @@ dependencies {
 
     implementation 'androidx.leanback:leanback:1.0.0'
     implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'com.google.android.material:material:1.9.0'
+    implementation 'com.google.android.material:material:1.10.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'com.pierfrancescosoffritti.androidyoutubeplayer:core:12.1.0'
     implementation(platform("com.google.firebase:firebase-bom:32.2.3"))
