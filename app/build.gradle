@@ -13,8 +13,8 @@ android {
         applicationId "com.AmmasPastriesSycn"
         minSdk 22
         targetSdk 34
-        versionCode 20
-        versionName "Dpad Missing Fix 2.0"
+        versionCode 21
+        versionName "Fixing Dpad"
     }
 
     buildTypes {

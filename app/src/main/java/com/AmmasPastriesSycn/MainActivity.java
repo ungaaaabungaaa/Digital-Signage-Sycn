@@ -3,6 +3,7 @@ package com.AmmasPastriesSycn;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
@@ -18,7 +19,7 @@ import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTube
 
 public class MainActivity extends FragmentActivity {
 
-    YouTubePlayerView  youTubePlayerView;
+    YouTubePlayerView youTubePlayerView;
     YouTubePlayer youTubePlayer;
     private boolean isPaused = false; // Track whether the video is paused or not
 
@@ -69,8 +70,6 @@ public class MainActivity extends FragmentActivity {
         IFramePlayerOptions iFramePlayerOptions = new IFramePlayerOptions.Builder()
                 .controls(0)
                 .mute(1)
-                .ccLoadPolicy(0)
-                .ivLoadPolicy(0)
                 .fullscreen(1)
                 .listType("playlist")
                 .list(playlistId)
@@ -104,32 +103,62 @@ public class MainActivity extends FragmentActivity {
         Toast.makeText(this, "No internet connection", Toast.LENGTH_LONG).show();
     }
 
+    @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER) {
             // Check if the YouTube player is initialized
             if (youTubePlayer != null) {
-                if (isPaused) {
-                    // If the video is currently paused, resume playback
-                    youTubePlayer.play();
-                    Toast.makeText(MainActivity.this, "Resumed", Toast.LENGTH_SHORT).show();
-                } else {
-                    // If the video is currently playing, pause it
-                    youTubePlayer.pause();
-                    Toast.makeText(MainActivity.this, "Paused", Toast.LENGTH_SHORT).show();
-                }
-                // Toggle the pause state
-                isPaused = !isPaused;
+                // If the video is currently playing or paused, treat D-Pad center as a back button press
+                onBackPressed();
             }
+            return true;
+        } else if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT) {
+            // Rewind -N seconds (Toast)
+            Toast.makeText(MainActivity.this, "Rewind -N seconds", Toast.LENGTH_SHORT).show();
+            return true;
+        } else if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT) {
+            // Fast forward +N seconds (Toast)
+            Toast.makeText(MainActivity.this, "Fast Forward +N seconds", Toast.LENGTH_SHORT).show();
             return true;
         }
         return super.onKeyDown(keyCode, event);
     }
 
     @Override
-    public void onStop() {
-        // App-specific method to stop playback.
-        youTubePlayerView.release();
-        super.onStop();
+    public boolean onKeyLongPress(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT) {
+            // Press and hold left: Scrubbing rewind (Toast)
+            Toast.makeText(MainActivity.this, "Scrubbing rewind", Toast.LENGTH_SHORT).show();
+            return true;
+        } else if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT) {
+            // Press and hold right: Scrubbing forward (Toast)
+            Toast.makeText(MainActivity.this, "Scrubbing forward", Toast.LENGTH_SHORT).show();
+            return true;
+        }
+        return super.onKeyLongPress(keyCode, event);
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (youTubePlayer != null && !isPaused) {
+            // Prevent Ambient Mode when video is playing
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (youTubePlayer != null && !isPaused) {
+            // Allow Ambient Mode when video is not playing
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish(); // Close the app
+    }
 }

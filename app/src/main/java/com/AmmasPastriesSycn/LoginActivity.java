@@ -4,7 +4,6 @@ import static android.content.ContentValues.TAG;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -36,12 +35,6 @@ public class LoginActivity extends FragmentActivity {
         // Initialize Firebase Authentication
         mAuth = FirebaseAuth.getInstance();
 
-
-        // Check whether android.hardware.touchscreen feature is available.
-        if (getPackageManager().hasSystemFeature(PackageManager.FEATURE_TOUCHSCREEN)) {
-            Log.d("HardwareFeatureTest", "Device has a touchscreen.");
-        }
-
         // Check if network is available
         if (!NetworkUtils.isNetworkAvailable(LoginActivity.this)) {
             // Display a toast message if there's no internet connection
@@ -56,11 +49,17 @@ public class LoginActivity extends FragmentActivity {
         loginButton = findViewById(R.id.button2);
         editTextEmail = findViewById(R.id.editTextTextEmailAddress);
         editTextPassword = findViewById(R.id.editTextTextPassword);
-        imageView=findViewById(R.id.imageView);
+        imageView = findViewById(R.id.imageView);
     }
 
     // Helper method to set up UI elements and event listeners
     private void setupUIElements() {
+        // Set next focus relationships
+        editTextEmail.setNextFocusDownId(R.id.editTextTextPassword);
+        editTextPassword.setNextFocusUpId(R.id.editTextTextEmailAddress);
+        editTextPassword.setNextFocusDownId(R.id.button2);
+        loginButton.setNextFocusUpId(R.id.editTextTextPassword);
+
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -87,36 +86,10 @@ public class LoginActivity extends FragmentActivity {
                             // Handle selection or button press
                             authenticateUser();
                             return true;
-                    }
-                }
-                return false;
-            }
-        });
-
-        // Add DPad navigation for the edit text fields
-        editTextEmail.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if (event.getAction() == KeyEvent.ACTION_DOWN) {
-                    switch (keyCode) {
-                        case KeyEvent.KEYCODE_DPAD_DOWN:
-                            // Move focus to the next field or button if available
-                            editTextPassword.requestFocus();
-                            return true;
-                    }
-                }
-                return false;
-            }
-        });
-
-        editTextPassword.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if (event.getAction() == KeyEvent.ACTION_DOWN) {
-                    switch (keyCode) {
-                        case KeyEvent.KEYCODE_DPAD_UP:
-                            // Move focus to the previous field or button if available
-                            editTextEmail.requestFocus();
+                        case KeyEvent.KEYCODE_BACK:
+                            // Handle the back button press
+                            finish();
+                            finishAffinity();
                             return true;
                     }
                 }
@@ -162,7 +135,6 @@ public class LoginActivity extends FragmentActivity {
         finish();
     }
 
-
     @Override
     protected void onStart() {
         super.onStart();
@@ -179,7 +151,4 @@ public class LoginActivity extends FragmentActivity {
         startActivity(mainIntent);
         finish();
     }
-
-
-
 }
