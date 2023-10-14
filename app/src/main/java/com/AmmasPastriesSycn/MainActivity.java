@@ -81,6 +81,8 @@ public class MainActivity extends FragmentActivity {
             @Override
             public void onReady(@NonNull YouTubePlayer youTubePlayer) {
                 MainActivity.this.youTubePlayer = youTubePlayer;
+                // autoplay & loop the playlist
+                MainActivity.this.youTubePlayer.setLoop(true);
                 MainActivity.this.youTubePlayer.play();
             }
         };
