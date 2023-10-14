@@ -4,11 +4,9 @@ plugins {
     id 'com.google.firebase.crashlytics'
     id 'com.google.firebase.firebase-perf'
 }
-
 android {
     namespace 'com.AmmasPastriesSycn'
     compileSdk 34
-
     defaultConfig {
         applicationId "com.AmmasPastriesSycn"
         minSdk 22
@@ -16,7 +14,6 @@ android {
         versionCode 22
         versionName "Playlist Loop"
     }
-
     buildTypes {
         release {
             minifyEnabled false
@@ -28,9 +25,7 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 }
-
 dependencies {
-
     implementation 'androidx.leanback:leanback:1.0.0'
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.10.0'
@@ -42,5 +37,4 @@ dependencies {
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.firebase:firebase-perf")
     implementation("com.google.firebase:firebase-database")
-
 }
