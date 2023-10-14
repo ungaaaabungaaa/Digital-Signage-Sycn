@@ -157,10 +157,4 @@ public class MainActivity extends FragmentActivity {
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         }
     }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        finish(); // Close the app
-    }
 }
