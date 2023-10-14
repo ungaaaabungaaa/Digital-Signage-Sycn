@@ -31,10 +31,8 @@ public class LoginActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         initializeViews();
-
         // Initialize Firebase Authentication
         mAuth = FirebaseAuth.getInstance();
-
         // Check if network is available
         if (!NetworkUtils.isNetworkAvailable(LoginActivity.this)) {
             // Display a toast message if there's no internet connection

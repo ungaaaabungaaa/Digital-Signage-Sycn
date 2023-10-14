@@ -13,8 +13,8 @@ android {
         applicationId "com.AmmasPastriesSycn"
         minSdk 22
         targetSdk 34
-        versionCode 21
-        versionName "Fixing Dpad"
+        versionCode 22
+        versionName "Playlist Loop"
     }
 
     buildTypes {
