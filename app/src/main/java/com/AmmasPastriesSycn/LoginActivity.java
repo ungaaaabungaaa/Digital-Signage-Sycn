@@ -1,7 +1,12 @@
 package com.AmmasPastriesSycn;
 
 import static android.content.ContentValues.TAG;
+
+import android.Manifest;
+import android.content.pm.PackageManager;
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -26,23 +31,48 @@ public class LoginActivity extends FragmentActivity {
     private FirebaseAuth mAuth;
     private ImageView imageView;
 
+    private static final int PERMISSION_REQUEST_CODE = 123;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         initializeViews();
-        // Initialize Firebase Authentication
         mAuth = FirebaseAuth.getInstance();
-        // Check if network is available
-        if (!NetworkUtils.isNetworkAvailable(LoginActivity.this)) {
-            // Display a toast message if there's no internet connection
-            Toast.makeText(LoginActivity.this, "No internet connection", Toast.LENGTH_LONG).show();
-        } else {
+
+        // Check if storage permissions are granted
+        if (checkPermissions()) {
+            // Permissions are granted; proceed with UI setup
             setupUIElements();
+        } else {
+            // Request permissions
+            requestPermissions();
         }
     }
 
-    // Helper method to initialize UI elements
+    private boolean checkPermissions() {
+        return ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    private void requestPermissions() {
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CODE);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == PERMISSION_REQUEST_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+                // Permissions are granted; proceed with UI setup
+                setupUIElements();
+            } else {
+                // Permissions are denied; you can display a message to the user or take appropriate action
+                Toast.makeText(this, "Storage permissions are required to use this app.", Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
     private void initializeViews() {
         loginButton = findViewById(R.id.button2);
         editTextEmail = findViewById(R.id.editTextTextEmailAddress);
@@ -50,9 +80,7 @@ public class LoginActivity extends FragmentActivity {
         imageView = findViewById(R.id.imageView);
     }
 
-    // Helper method to set up UI elements and event listeners
     private void setupUIElements() {
-        // Set next focus relationships
         editTextEmail.setNextFocusDownId(R.id.editTextTextPassword);
         editTextPassword.setNextFocusUpId(R.id.editTextTextEmailAddress);
         editTextPassword.setNextFocusDownId(R.id.button2);
@@ -61,7 +89,6 @@ public class LoginActivity extends FragmentActivity {
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // Call the method to authenticate the user
                 authenticateUser();
             }
         });
@@ -73,7 +100,6 @@ public class LoginActivity extends FragmentActivity {
             }
         });
 
-        // Add DPad navigation for the login button
         loginButton.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
@@ -81,11 +107,9 @@ public class LoginActivity extends FragmentActivity {
                     switch (keyCode) {
                         case KeyEvent.KEYCODE_DPAD_CENTER:
                         case KeyEvent.KEYCODE_ENTER:
-                            // Handle selection or button press
                             authenticateUser();
                             return true;
                         case KeyEvent.KEYCODE_BACK:
-                            // Handle the back button press
                             finish();
                             finishAffinity();
                             return true;
@@ -96,23 +120,19 @@ public class LoginActivity extends FragmentActivity {
         });
     }
 
-    // Method to authenticate the user
     private void authenticateUser() {
         String email = editTextEmail.getText().toString().trim();
         String password = editTextPassword.getText().toString().trim();
 
-        // Sign in with email and password using Firebase Authentication
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            // Authentication success, log and navigate to the main activity
                             Log.d(TAG, "signInWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
                             navigateToMain();
                         } else {
-                            // Authentication failed, display a toast message
                             Toast.makeText(LoginActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
                         }
                     }
@@ -120,13 +140,11 @@ public class LoginActivity extends FragmentActivity {
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        // Authentication failed due to an exception, display a toast message
                         Toast.makeText(LoginActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
                     }
                 });
     }
 
-    // Method to navigate to the main activity
     private void navigateToMain() {
         Intent mainIntent = new Intent(LoginActivity.this, MainActivity.class);
         startActivity(mainIntent);
@@ -136,7 +154,6 @@ public class LoginActivity extends FragmentActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        // Check if a user is logged in; if not, navigate to the login screen
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser != null) {
             navigateToHome();
@@ -144,7 +161,6 @@ public class LoginActivity extends FragmentActivity {
     }
 
     private void navigateToHome() {
-        // Navigate to the LoginActivity if no user is logged in
         Intent mainIntent = new Intent(LoginActivity.this, MainActivity.class);
         startActivity(mainIntent);
         finish();

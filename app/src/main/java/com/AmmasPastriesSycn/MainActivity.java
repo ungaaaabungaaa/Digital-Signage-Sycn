@@ -1,6 +1,9 @@
 package com.AmmasPastriesSycn;
 
+import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
@@ -17,6 +20,8 @@ import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.Abs
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.options.IFramePlayerOptions;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView;
 
+import java.io.File;
+
 public class MainActivity extends FragmentActivity {
 
     YouTubePlayerView youTubePlayerView;
@@ -27,10 +32,8 @@ public class MainActivity extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         // Initialize UI elements
         youTubePlayerView = findViewById(R.id.youtube_player);
-        getLifecycle().addObserver(youTubePlayerView);
         // Check for network connectivity and initialize YouTube player if available
         if (NetworkUtils.isNetworkAvailable(MainActivity.this)) {
             initializeYouTubePlayer();
@@ -57,7 +60,6 @@ public class MainActivity extends FragmentActivity {
                     playDefaultPlaylist();
                 }
             }
-
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 Toast.makeText(MainActivity.this, "Error: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
@@ -67,6 +69,7 @@ public class MainActivity extends FragmentActivity {
 
     private void playYouTubePlaylist(String playlistId) {
         // Configure YouTube player options
+        getLifecycle().addObserver(youTubePlayerView);
         IFramePlayerOptions iFramePlayerOptions = new IFramePlayerOptions.Builder()
                 .controls(0)
                 .mute(1)
@@ -74,7 +77,6 @@ public class MainActivity extends FragmentActivity {
                 .listType("playlist")
                 .list(playlistId)
                 .build();
-
         // Initialize YouTube player and start playback
         youTubePlayerView.setVisibility(View.VISIBLE);
         final AbstractYouTubePlayerListener youTubePlayerListener = new AbstractYouTubePlayerListener() {
@@ -86,7 +88,6 @@ public class MainActivity extends FragmentActivity {
                 MainActivity.this.youTubePlayer.play();
             }
         };
-
         youTubePlayerView.initialize(youTubePlayerListener, true, iFramePlayerOptions);
     }
 
@@ -104,14 +105,39 @@ public class MainActivity extends FragmentActivity {
         youTubePlayerView.setVisibility(View.GONE);
         Toast.makeText(this, "No internet connection", Toast.LENGTH_LONG).show();
     }
-
+    // Define a handler to control video pause and play
+    private final Handler pausePlayHandler = new Handler(new Handler.Callback() {
+        @Override
+        public boolean handleMessage(Message msg) {
+            if (msg.what == 1) {
+                // Toggle between play and pause
+                if (youTubePlayer != null) {
+                    if (isPaused) {
+                        youTubePlayer.play();
+                    } else {
+                        youTubePlayer.pause();
+                    }
+                    isPaused = !isPaused;
+                }
+            }
+            return true;
+        }
+    });
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER) {
             // Check if the YouTube player is initialized
             if (youTubePlayer != null) {
-                // If the video is currently playing or paused, treat D-Pad center as a back button press
-                onBackPressed();
+                // Toggle between pause and play
+                isPaused = !isPaused;
+                // Show a message indicating the video state
+                Toast.makeText(MainActivity.this, isPaused ? "Video Paused" : "Video Resumed", Toast.LENGTH_SHORT).show();
+                // If the video is paused, pause it; if it's playing, play it
+                if (isPaused) {
+                    youTubePlayer.pause();
+                } else {
+                    youTubePlayer.play();
+                }
             }
             return true;
         } else if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT) {
@@ -125,7 +151,6 @@ public class MainActivity extends FragmentActivity {
         }
         return super.onKeyDown(keyCode, event);
     }
-
     @Override
     public boolean onKeyLongPress(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT) {
@@ -150,11 +175,31 @@ public class MainActivity extends FragmentActivity {
     }
 
     @Override
-    protected void onStop() {
+    protected void onStop()
+    {
         super.onStop();
+        clearCache(MainActivity.this);
         if (youTubePlayer != null && !isPaused) {
             // Allow Ambient Mode when video is not playing
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        }
+    }
+    public static void clearCache(Context context) {
+        try {
+            // Use the context to get the cache directory
+            File cacheDir = context.getCacheDir();
+            if (cacheDir != null && cacheDir.isDirectory()) {
+                // List all files in the cache directory
+                File[] cacheFiles = cacheDir.listFiles();
+                if (cacheFiles != null) {
+                    for (File cacheFile : cacheFiles) {
+                        // Delete each file
+                        cacheFile.delete();
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }
