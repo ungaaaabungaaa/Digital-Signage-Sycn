@@ -8,7 +8,6 @@
     tools:context=".MainActivity"
     android:descendantFocusability="beforeDescendants">
 
-
     <com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
         android:id="@+id/youtube_player"
         android:layout_width="match_parent"

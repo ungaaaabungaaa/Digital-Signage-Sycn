@@ -3,10 +3,6 @@
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
-        android:maxSdkVersion="32"   />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
-        android:maxSdkVersion="32" />
 
     <!-- Features that the app may or may not require -->
     <uses-feature
@@ -34,9 +30,6 @@
     <uses-feature android:name="android.hardware.wifi"
         android:required="false"/>
 
-    <uses-configuration
-        android:reqNavigation="dpad"/>
-
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -52,23 +45,16 @@
             android:value="true" />
 
         <activity
-            android:name=".LoginActivity"
+            android:name=".MainActivity"
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:windowSoftInputMode="adjustResize"
             android:hardwareAccelerated="true"
-            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-        <activity
-            android:name=".MainActivity"
-            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
-            android:windowSoftInputMode="adjustResize"
-            android:hardwareAccelerated="true"
-            android:exported="true">
         </activity>
     </application>
 

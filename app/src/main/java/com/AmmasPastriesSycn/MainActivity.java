@@ -19,7 +19,6 @@ import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.options.IFramePlayerOptions;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView;
-
 import java.io.File;
 
 public class MainActivity extends FragmentActivity {
@@ -54,8 +53,8 @@ public class MainActivity extends FragmentActivity {
                 if (dataSnapshot.exists()) {
                     // Get the new playlist ID from Firebase
                     String playlistId = dataSnapshot.getValue(String.class);
-                    // Initialize and play the new YouTube playlist
-                    playYouTubePlaylist(playlistId);
+                    // Refresh or restart the YouTube player
+                    refreshOrRestartYouTubePlayer(playlistId);
                 } else {
                     playDefaultPlaylist();
                 }
@@ -65,6 +64,21 @@ public class MainActivity extends FragmentActivity {
                 Toast.makeText(MainActivity.this, "Error: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void refreshOrRestartYouTubePlayer(String playlistId) {
+        // Release the existing YouTube player, if any
+        releaseYouTubePlayer();
+
+        // Initialize and play the new YouTube playlist
+        playYouTubePlaylist(playlistId);
+    }
+
+    private void releaseYouTubePlayer() {
+        if (youTubePlayer != null) {
+            youTubePlayerView.release();
+            youTubePlayer = null;
+        }
     }
 
     private void playYouTubePlaylist(String playlistId) {
@@ -105,6 +119,7 @@ public class MainActivity extends FragmentActivity {
         youTubePlayerView.setVisibility(View.GONE);
         Toast.makeText(this, "No internet connection", Toast.LENGTH_LONG).show();
     }
+
     // Define a handler to control video pause and play
     private final Handler pausePlayHandler = new Handler(new Handler.Callback() {
         @Override
@@ -123,6 +138,7 @@ public class MainActivity extends FragmentActivity {
             return true;
         }
     });
+
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER) {
@@ -151,6 +167,7 @@ public class MainActivity extends FragmentActivity {
         }
         return super.onKeyDown(keyCode, event);
     }
+
     @Override
     public boolean onKeyLongPress(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT) {
@@ -175,8 +192,7 @@ public class MainActivity extends FragmentActivity {
     }
 
     @Override
-    protected void onStop()
-    {
+    protected void onStop() {
         super.onStop();
         clearCache(MainActivity.this);
         if (youTubePlayer != null && !isPaused) {
@@ -184,6 +200,7 @@ public class MainActivity extends FragmentActivity {
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         }
     }
+
     public static void clearCache(Context context) {
         try {
             // Use the context to get the cache directory
